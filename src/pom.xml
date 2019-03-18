@@ -97,9 +97,9 @@
 	<modules>
 		<module>microemu-cldc</module>
 		<module>microemu-midp</module>
+		<module>microemu-core</module>
 <!--
 		<module>microemu-javase</module>
-		<module>microemu-core</module>
 		<module>microemu-swing</module>
 		<module>microemu-embedded</module>
 -->
