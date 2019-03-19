@@ -30,11 +30,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-
-import org.microemu.app.Main;
 import org.microemu.app.util.BuildVersion;
 
 /**
@@ -63,7 +60,7 @@ public class SwingAboutDialog extends SwingDialogPanel {
 		add(iconLabel, c);
 
 		iconLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				Main.class.getResource("/org/microemu/icon.png"))));
+		    SwingAboutDialog.class.getResource("/org/microemu/icon.png"))));
 
 		c.gridx = 1;
 		c.gridy = 0;
