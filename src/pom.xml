@@ -12,7 +12,7 @@
 	</organization>
 	<properties>
 		<jdk.version>1.8</jdk.version>
-		<asm.version>3.3.1</asm.version>
+		<asm.version>7.1</asm.version>
 	</properties>
 	<build>
 		<finalName>${project.artifactId}-${project.version}</finalName>
@@ -94,11 +94,20 @@
 		</dependency>
 	</dependencies>
 	<modules>
-		<module>microemu-cldc</module>
-		<module>microemu-midp</module>
-		<module>microemu-javase</module>
+		<module>microemu-api-cldc</module>
+		<module>microemu-api-midp</module>
 		<module>microemu-core</module>
+		<module>microemu-api-jsr75</module>
+		<module>microemu-api-jsr82</module>
+		<module>microemu-api-jsr120</module>
+		<module>microemu-api-jsr135</module>
+		<module>microemu-api-jsr184</module>
+		<module>microemu-api-nokia</module>
+		<module>microemu-api-siemens</module>
+		<module>microemu-javase</module>
 		<module>microemu-javase-swing</module>
-		<module>microemu-embedded</module>
+		<module>microemu-javase-embedded</module>
+		<module>microemu-demo-midp</module>
+		<module>microemu-demo-fcview</module>
 	</modules>
 </project>

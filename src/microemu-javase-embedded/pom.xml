@@ -7,8 +7,8 @@
 		<artifactId>microemu</artifactId>
 		<version>3.0.1</version>
 	</parent>
-	<name>microemu-javase-swing</name>
-	<artifactId>microemu-javase-swing</artifactId>
+	<name>microemu-javase-embedded</name>
+	<artifactId>microemu-javase-embedded</artifactId>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>

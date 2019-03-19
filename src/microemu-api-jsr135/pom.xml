@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -7,21 +6,10 @@
 		<artifactId>microemu</artifactId>
 		<version>3.0.1</version>
 	</parent>
-	<name>microemu-core</name>
-	<artifactId>microemu-core</artifactId>
+	<name>microemu-api-jsr135</name>
+	<artifactId>microemu-api-jsr135</artifactId>
 	<packaging>jar</packaging>
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>${asm.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>net.eiroca</groupId>
 			<artifactId>microemu-api-cldc</artifactId>
@@ -30,6 +18,16 @@
 		<dependency>
 			<groupId>net.eiroca</groupId>
 			<artifactId>microemu-api-midp</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-api-cldc</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

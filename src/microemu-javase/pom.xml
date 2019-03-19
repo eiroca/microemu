@@ -12,24 +12,53 @@
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-			<version>${asm.version}</version>
-        </dependency>
-		<dependency>
 			<groupId>net.eiroca</groupId>
-			<artifactId>microemu-cldc</artifactId>
+			<artifactId>microemu-api-cldc</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.eiroca</groupId>
-			<artifactId>microemu-midp</artifactId>
+			<artifactId>microemu-api-midp</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-api-jsr75</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-api-jsr82</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-api-jsr120</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-api-jsr135</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-api-jsr184</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-api-nokia</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-api-siemens</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.eiroca</groupId>
+			<artifactId>microemu-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

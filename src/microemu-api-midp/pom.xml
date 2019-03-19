@@ -7,13 +7,13 @@
 		<artifactId>microemu</artifactId>
 		<version>3.0.1</version>
 	</parent>
-	<name>microemu-javase-swing</name>
-	<artifactId>microemu-javase-swing</artifactId>
+	<name>microemu-api-midp</name>
+	<artifactId>microemu-api-midp</artifactId>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>net.eiroca</groupId>
-			<artifactId>microemu-javase</artifactId>
+			<artifactId>microemu-api-cldc</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
