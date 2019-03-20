@@ -1,31 +1,24 @@
 /**
-   *  MicroEmulator
- *  Copyright (C) 2008 Bartek Teodorczyk <barteo@barteo.net>
+ * MicroEmulator Copyright (C) 2008 Bartek Teodorczyk <barteo@barteo.net>
  *
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives: 1. GNU Lesser General Public
+ * License (the "LGPL") version 2.1 or any newer version 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
 package org.microemu.app.embedded;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-
 import org.microemu.DisplayComponent;
 import org.microemu.MIDletBridge;
 import org.microemu.app.Common;
@@ -45,80 +38,82 @@ import org.microemu.log.Logger;
 
 public class Headless {
 
-	private Common emulator;
+  private final Common emulator;
 
-	private EmulatorContext context = new EmulatorContext() {
+  private final EmulatorContext context = new EmulatorContext() {
 
-		private DisplayComponent displayComponent = new NoUiDisplayComponent();
+    private final DisplayComponent displayComponent = new NoUiDisplayComponent();
 
-		private InputMethod inputMethod = new J2SEInputMethod();
+    private final InputMethod inputMethod = new J2SEInputMethod();
 
-		private DeviceDisplay deviceDisplay = new J2SEDeviceDisplay(this);
+    private final DeviceDisplay deviceDisplay = new J2SEDeviceDisplay(this);
 
-		private FontManager fontManager = new J2SEFontManager();
+    private final FontManager fontManager = new J2SEFontManager();
 
-		public DisplayComponent getDisplayComponent() {
-			return displayComponent;
-		}
+    @Override
+    public DisplayComponent getDisplayComponent() {
+      return displayComponent;
+    }
 
-		public InputMethod getDeviceInputMethod() {
-			return inputMethod;
-		}
+    @Override
+    public InputMethod getDeviceInputMethod() {
+      return inputMethod;
+    }
 
-		public DeviceDisplay getDeviceDisplay() {
-			return deviceDisplay;
-		}
+    @Override
+    public DeviceDisplay getDeviceDisplay() {
+      return deviceDisplay;
+    }
 
-		public FontManager getDeviceFontManager() {
-			return fontManager;
-		}
+    @Override
+    public FontManager getDeviceFontManager() {
+      return fontManager;
+    }
 
-		public InputStream getResourceAsStream(Class origClass, String name) {
-            return MIDletBridge.getCurrentMIDlet().getClass().getResourceAsStream(name);
-		}
-		
-		public boolean platformRequest(final String URL) {
-			new Thread(new Runnable() {
-				public void run() {
-					Message.info("MIDlet requests that the device handle the following URL: " + URL);
-				}
-			}).start();
+    @Override
+    public InputStream getResourceAsStream(final Class origClass, final String name) {
+      return MIDletBridge.getCurrentMIDlet().getClass().getResourceAsStream(name);
+    }
 
-			return false;
-		}
-	};
+    @Override
+    public boolean platformRequest(final String URL) {
+      new Thread(() -> Message.info("MIDlet requests that the device handle the following URL: " + URL)).start();
 
-	public Headless() {
-		emulator = new Common(context);
-	}
+      return false;
+    }
+  };
 
-	public static void main(String[] args) {
-		StringBuffer debugArgs = new StringBuffer();
-		ArrayList params = new ArrayList();
+  public Headless() {
+    emulator = new Common(context);
+  }
 
-		// Allow to override in command line
-		// Non-persistent RMS
-		params.add("--rms");
-		params.add("memory");
+  public static void main(final String[] args) {
+    final StringBuffer debugArgs = new StringBuffer();
+    final ArrayList params = new ArrayList();
 
-		for (int i = 0; i < args.length; i++) {
-			params.add(args[i]);
-			if (debugArgs.length() != 0) {
-				debugArgs.append(", ");
-			}
-			debugArgs.append("[").append(args[i]).append("]");
-		}
+    // Allow to override in command line
+    // Non-persistent RMS
+    params.add("--rms");
+    params.add("memory");
 
-		if (args.length > 0) {
-			Logger.debug("headless arguments", debugArgs.toString());
-		}
+    for (final String arg : args) {
+      params.add(arg);
+      if (debugArgs.length() != 0) {
+        debugArgs.append(", ");
+      }
+      debugArgs.append("[").append(arg).append("]");
+    }
 
-		Headless app = new Headless();
+    if (args.length > 0) {
+      Logger.debug("headless arguments", debugArgs.toString());
+    }
 
-		DeviceEntry defaultDevice = new DeviceEntry("Default device", null, DeviceImpl.DEFAULT_LOCATION, true, false);
+    final Headless app = new Headless();
 
-		app.emulator.initParams(params, defaultDevice, J2SEDevice.class);
-		app.emulator.initMIDlet(true);
-	}
+    final DeviceEntry defaultDevice = new DeviceEntry("Default device", null, DeviceImpl.DEFAULT_LOCATION, true, false);
+
+    app.emulator.initParams(params, defaultDevice, J2SEDevice.class);
+    app.emulator.initMIDlet(true);
+  }
 
 }

@@ -58,4 +58,10 @@ public class SwtTextBoxUI extends DisplayableImplUI implements TextBoxUI {
 		
 	}
 
+  @Override
+  public void delete(int offset, int length) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

@@ -1,21 +1,25 @@
 /**
- *  MicroEmulator
+ * MicroEmulator
+ * 
+ * Copyright (C) 2001 Bartek Teodorczyk <barteo@barteo.net>
+ * 
+ * It is licensed under the following two licenses as alternatives:
+ * 
+ * 1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
+ * 
+ * 2. Apache License (the "AL") Version 2.0
  *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  @version $Id$
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
+ * 
  */
 package javax.microedition.media.protocol;
 
@@ -24,24 +28,24 @@ import javax.microedition.media.Controllable;
 
 public interface SourceStream extends Controllable {
 
-	public static final int NOT_SEEKABLE = 0;
+  public static final int NOT_SEEKABLE = 0;
 
-	public static final int SEEKABLE_TO_START = 1;
+  public static final int SEEKABLE_TO_START = 1;
 
-	public static final int RANDOM_ACCESSIBLE = 2;
-	
-	public abstract ContentDescriptor getContentDescriptor();
+  public static final int RANDOM_ACCESSIBLE = 2;
 
-	public abstract long getContentLength();
+  public abstract ContentDescriptor getContentDescriptor();
 
-	public abstract int read(byte abyte0[], int i, int j) throws IOException;
+  public abstract long getContentLength();
 
-	public abstract int getTransferSize();
+  public abstract int read(byte abyte0[], int i, int j) throws IOException;
 
-	public abstract long seek(long l) throws IOException;
+  public abstract int getTransferSize();
 
-	public abstract long tell();
+  public abstract long seek(long l) throws IOException;
 
-	public abstract int getSeekType();
+  public abstract long tell();
+
+  public abstract int getSeekType();
 
 }

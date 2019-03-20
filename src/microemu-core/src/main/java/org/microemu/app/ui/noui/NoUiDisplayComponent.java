@@ -1,31 +1,23 @@
-/*
- *  MicroEmulator
- *  Copyright (C) 2001-2006 Bartek Teodorczyk <barteo@barteo.net>
+/**
+ * MicroEmulator Copyright (C) 2001-2006 Bartek Teodorczyk <barteo@barteo.net>
  *
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives: 1. GNU Lesser General Public
+ * License (the "LGPL") version 2.1 or any newer version 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
-
 package org.microemu.app.ui.noui;
 
 import javax.microedition.lcdui.Displayable;
-
 import org.microemu.DisplayAccess;
 import org.microemu.DisplayComponent;
 import org.microemu.MIDletAccess;
@@ -38,61 +30,49 @@ import org.microemu.device.j2se.J2SEGraphicsSurface;
 
 public class NoUiDisplayComponent implements DisplayComponent {
 
-	private J2SEGraphicsSurface graphicsSurface;
+  private J2SEGraphicsSurface graphicsSurface;
 
-	private DisplayRepaintListener displayRepaintListener;
-	
-	public void addDisplayRepaintListener(DisplayRepaintListener l) {
-		displayRepaintListener = l;
-	}
+  private DisplayRepaintListener displayRepaintListener;
 
-	public void removeDisplayRepaintListener(DisplayRepaintListener l) {
-		if (displayRepaintListener == l) {
-			displayRepaintListener = null;
-		}
-	}
+  public void addDisplayRepaintListener(final DisplayRepaintListener l) {
+    displayRepaintListener = l;
+  }
 
-	public void repaintRequest(int x, int y, int width, int height) 
-	{
-		MIDletAccess ma = MIDletBridge.getMIDletAccess();
-		if (ma == null) {
-			return;
-		}
-		DisplayAccess da = ma.getDisplayAccess();
-		if (da == null) {
-			return;
-		}
-		Displayable current = da.getCurrent();
-		if (current == null) {
-			return;
-		}
+  public void removeDisplayRepaintListener(final DisplayRepaintListener l) {
+    if (displayRepaintListener == l) {
+      displayRepaintListener = null;
+    }
+  }
 
-		Device device = DeviceFactory.getDevice();
+  @Override
+  public void repaintRequest(final int x, final int y, final int width, final int height) {
+    final MIDletAccess ma = MIDletBridge.getMIDletAccess();
+    if (ma == null) { return; }
+    final DisplayAccess da = ma.getDisplayAccess();
+    if (da == null) { return; }
+    final Displayable current = da.getCurrent();
+    if (current == null) { return; }
+    final Device device = DeviceFactory.getDevice();
+    if (device != null) {
+      if (graphicsSurface == null) {
+        graphicsSurface = new J2SEGraphicsSurface(
+            device.getDeviceDisplay().getFullWidth(), device.getDeviceDisplay().getFullHeight(), false, 0x000000);
+      }
+      final J2SEDeviceDisplay deviceDisplay = (J2SEDeviceDisplay)device.getDeviceDisplay();
+      synchronized (graphicsSurface) {
+        deviceDisplay.paintDisplayable(graphicsSurface, x, y, width, height);
+        if (!deviceDisplay.isFullScreenMode()) {
+          deviceDisplay.paintControls(graphicsSurface.getGraphics());
+        }
+      }
+      fireDisplayRepaint(graphicsSurface);
+    }
+  }
 
-		if (device != null) {
-			if (graphicsSurface == null) {
-				graphicsSurface = new J2SEGraphicsSurface(
-						device.getDeviceDisplay().getFullWidth(), device.getDeviceDisplay().getFullHeight(), false, 0x000000);
-			}
-					
-			J2SEDeviceDisplay deviceDisplay = (J2SEDeviceDisplay) device.getDeviceDisplay();
-			synchronized (graphicsSurface) {
-				deviceDisplay.paintDisplayable(graphicsSurface, x, y, width, height);
-				if (!deviceDisplay.isFullScreenMode()) {
-					deviceDisplay.paintControls(graphicsSurface.getGraphics());
-				}
-			}
-
-			fireDisplayRepaint(graphicsSurface);
-		}	
-	}
-
-
-	private void fireDisplayRepaint(J2SEGraphicsSurface graphicsSurface)
-	{
-		if (displayRepaintListener != null) {
-			displayRepaintListener.repaintInvoked(graphicsSurface);
-		}
-	}
+  private void fireDisplayRepaint(final J2SEGraphicsSurface graphicsSurface) {
+    if (displayRepaintListener != null) {
+      displayRepaintListener.repaintInvoked(graphicsSurface);
+    }
+  }
 
 }

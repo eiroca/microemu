@@ -1,25 +1,22 @@
-/*
- * MicroEmulator 
- * Copyright (C) 2001 Bartek Teodorczyk <barteo@barteo.net>
+/**
+ * MicroEmulator Copyright (C) 2001 Bartek Teodorczyk <barteo@barteo.net>
  * 
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives:
+ * 
+ * 1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
+ * 
+ * 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
 
 package javax.microedition.lcdui;
@@ -27,234 +24,226 @@ package javax.microedition.lcdui;
 import org.microemu.device.DeviceFactory;
 
 class StringComponent {
-	private String text;
 
-	private int breaks[] = new int[4];
+  private String text;
 
-	private boolean invertPaint = false;
+  private int breaks[] = new int[4];
 
-	private int numOfBreaks;
+  private boolean invertPaint = false;
 
-	private int width;
+  private int numOfBreaks;
 
-	private int widthDecreaser;
+  private int width;
 
-	public StringComponent() {
-		this(null);
-	}
+  private int widthDecreaser;
 
-	public StringComponent(String text) {
-		synchronized (this) {
-			this.width = -1;
-			this.widthDecreaser = 0;
-			setText(text);
-		}
-	}
+  public StringComponent() {
+    this(null);
+  }
 
-	public int getCharHeight() {
-		return Font.getDefaultFont().getHeight();
-	}
+  public StringComponent(String text) {
+    synchronized (this) {
+      this.width = -1;
+      this.widthDecreaser = 0;
+      setText(text);
+    }
+  }
 
-	public int getCharPositionX(int num) {
-		synchronized (this) {
-			if (numOfBreaks == -1) {
-				updateBreaks();
-			}
-	
-			int i, prevIndex = 0;
-			Font f = Font.getDefaultFont();
-	
-			for (i = 0; i < numOfBreaks; i++) {
-				if (num < breaks[i]) {
-					break;
-				}
-				prevIndex = breaks[i];
-			}
-			
-			return f.substringWidth(text, prevIndex, num - prevIndex);
-		}
-	}
+  public int getCharHeight() {
+    return Font.getDefaultFont().getHeight();
+  }
 
-	public int getCharPositionY(int num) {
-		int y = 0;
-		synchronized (this) {
-			if (numOfBreaks == -1) {
-				updateBreaks();
-			}
-	
-			Font f = Font.getDefaultFont();
-	
-			for (int i = 0; i < numOfBreaks; i++) {
-				if (num < breaks[i]) {
-					break;
-				}
-				y += f.getHeight();
-			}
-		}
+  public int getCharPositionX(int num) {
+    synchronized (this) {
+      if (numOfBreaks == -1) {
+        updateBreaks();
+      }
 
-		return y;
-	}
+      int i, prevIndex = 0;
+      Font f = Font.getDefaultFont();
 
-	public int getHeight() {
-		int height;
-		synchronized (this) {
-			if (numOfBreaks == -1) {
-				updateBreaks();
-			}
+      for (i = 0; i < numOfBreaks; i++) {
+        if (num < breaks[i]) {
+          break;
+        }
+        prevIndex = breaks[i];
+      }
 
-			Font f = Font.getDefaultFont();
+      return f.substringWidth(text, prevIndex, num - prevIndex);
+    }
+  }
 
-			if (text == null) {
-				return 0;
-			}
+  public int getCharPositionY(int num) {
+    int y = 0;
+    synchronized (this) {
+      if (numOfBreaks == -1) {
+        updateBreaks();
+      }
 
-			if (numOfBreaks == 0) {
-				return f.getHeight();
-			}
+      Font f = Font.getDefaultFont();
 
-			height = numOfBreaks * f.getHeight();
+      for (int i = 0; i < numOfBreaks; i++) {
+        if (num < breaks[i]) {
+          break;
+        }
+        y += f.getHeight();
+      }
+    }
 
-			if (breaks[numOfBreaks - 1] == text.length() - 1
-					&& text.charAt(text.length() - 1) == '\n') {
-			} else {
-				height += f.getHeight();
-			}
-		}
+    return y;
+  }
 
-		return height;
-	}
+  public int getHeight() {
+    int height;
+    synchronized (this) {
+      if (numOfBreaks == -1) {
+        updateBreaks();
+      }
 
-	public String getText() {
-		return text;
-	}
+      Font f = Font.getDefaultFont();
 
-	public void invertPaint(boolean state) {
-		synchronized (this) {
-			invertPaint = state;
-		}
-	}
+      if (text == null) { return 0; }
 
-	public int paint(Graphics g) {
-		if (text == null) {
-			return 0;
-		}
+      if (numOfBreaks == 0) { return f.getHeight(); }
 
-		int y;
-		synchronized (this) {
-			if (numOfBreaks == -1) {
-				updateBreaks();
-			}
-	
-			int i, prevIndex;
-			Font f = Font.getDefaultFont();
-	
-			for (i = prevIndex = y = 0; i < numOfBreaks; i++) {
-				if (invertPaint) {
-					g.setGrayScale(0);
-				} else {
-					g.setGrayScale(255);
-				}
-				g.fillRect(0, y, width, f.getHeight());
-				if (invertPaint) {
-					g.setGrayScale(255);
-				} else {
-					g.setGrayScale(0);
-				}
-				g.drawSubstring(text, prevIndex, breaks[i] - prevIndex, 0, y, 0);
-				prevIndex = breaks[i];
-				y += f.getHeight();
-			}
-			// By adding the OR clasuse (text length comparison) we make sure
-			// that even if the current value of a ChoiceGroup is empty, there will
-			// be some visual clue that the ChoiceGroup is there
-			if (prevIndex != text.length() || text.length() == 0) {
-				if (invertPaint) {
-					g.setGrayScale(0);
-				} else {
-					g.setGrayScale(255);
-				}
-				g.fillRect(0, y, width, f.getHeight());
-				if (invertPaint) {
-					g.setGrayScale(255);
-				} else {
-					g.setGrayScale(0);
-				}
-				g.drawSubstring(text, prevIndex, text.length() - prevIndex, 0, y, 0);
-				y += f.getHeight();
-			}
-		}
+      height = numOfBreaks * f.getHeight();
 
-		return y;
-	}
+      if (breaks[numOfBreaks - 1] == text.length() - 1
+          && text.charAt(text.length() - 1) == '\n') {
+      }
+      else {
+        height += f.getHeight();
+      }
+    }
 
-	public void setText(String text) {
-		synchronized (this) {
-			this.text = text;
-			this.numOfBreaks = -1;
-		}
-	}
+    return height;
+  }
 
-	public void setWidthDecreaser(int widthDecreaser) {
-		synchronized (this) {
-			this.widthDecreaser = widthDecreaser;
-			numOfBreaks = -1;
-		}
-	}
+  public String getText() {
+    return text;
+  }
 
-	private void insertBreak(int pos) {
-		int i;
+  public void invertPaint(boolean state) {
+    synchronized (this) {
+      invertPaint = state;
+    }
+  }
 
-		for (i = 0; i < numOfBreaks; i++) {
-			if (pos < breaks[i]) {
-				break;
-			}
-		}
-		if (numOfBreaks + 1 == breaks.length) {
-			int newbreaks[] = new int[breaks.length + 4];
-			System.arraycopy(breaks, 0, newbreaks, 0, numOfBreaks);
-			breaks = newbreaks;
-		}
-		System.arraycopy(breaks, i, breaks, i + 1, numOfBreaks - i);
-		breaks[i] = pos;
-		numOfBreaks++;
-	}
+  public int paint(Graphics g) {
+    if (text == null) { return 0; }
+    int y;
+    synchronized (this) {
+      if (numOfBreaks == -1) {
+        updateBreaks();
+      }
+      int i;
+      int prevIndex;
+      Font f = Font.getDefaultFont();
 
-	private void updateBreaks() {
-		if (text == null) {
-			return;
-		}
+      for (i = prevIndex = y = 0; i < numOfBreaks; i++) {
+        if (invertPaint) {
+          g.setGrayScale(0);
+        }
+        else {
+          g.setGrayScale(255);
+        }
+        g.fillRect(0, y, width, f.getHeight());
+        if (invertPaint) {
+          g.setGrayScale(255);
+        }
+        else {
+          g.setGrayScale(0);
+        }
+        g.drawSubstring(text, prevIndex, breaks[i] - prevIndex, 0, y, 0);
+        prevIndex = breaks[i];
+        y += f.getHeight();
+      }
+      // By adding the OR clasuse (text length comparison) we make sure
+      // that even if the current value of a ChoiceGroup is empty, there will
+      // be some visual clue that the ChoiceGroup is there
+      if (prevIndex != text.length() || text.length() == 0) {
+        if (invertPaint) {
+          g.setGrayScale(0);
+        }
+        else {
+          g.setGrayScale(255);
+        }
+        g.fillRect(0, y, width, f.getHeight());
+        if (invertPaint) {
+          g.setGrayScale(255);
+        }
+        else {
+          g.setGrayScale(0);
+        }
+        g.drawSubstring(text, prevIndex, text.length() - prevIndex, 0, y, 0);
+        y += f.getHeight();
+      }
+    }
+    return y;
+  }
 
-		// TODO use Displayable width
-		width = DeviceFactory.getDevice().getDeviceDisplay().getWidth()
-				- widthDecreaser;
+  public void setText(String text) {
+    synchronized (this) {
+      this.text = text;
+      this.numOfBreaks = -1;
+    }
+  }
 
-		int prevIndex = 0;
-		int canBreak = 0;
-		numOfBreaks = 0;
-		Font f = Font.getDefaultFont();
+  public void setWidthDecreaser(int widthDecreaser) {
+    synchronized (this) {
+      this.widthDecreaser = widthDecreaser;
+      numOfBreaks = -1;
+    }
+  }
 
-		for (int i = 0; i < text.length(); i++) {
-			if (text.charAt(i) == ' ') {
-				canBreak = i + 1;
-			}
-			if (text.charAt(i) == '\n') {
-				insertBreak(i);
-				canBreak = 0;
-				prevIndex = i + 1;
-				continue;
-			}
-			if (f.substringWidth(text, prevIndex, i - prevIndex + 1) > width) {
-				if (canBreak != 0) {
-					insertBreak(canBreak);
-					i = canBreak;
-					prevIndex = i;
-				} else {
-					insertBreak(i);
-					prevIndex = i + 1;
-				}
-				canBreak = 0;
-			}
-		}
-	}
+  private void insertBreak(int pos) {
+    int i;
+    for (i = 0; i < numOfBreaks; i++) {
+      if (pos < breaks[i]) {
+        break;
+      }
+    }
+    if (numOfBreaks + 1 == breaks.length) {
+      int newbreaks[] = new int[breaks.length + 4];
+      System.arraycopy(breaks, 0, newbreaks, 0, numOfBreaks);
+      breaks = newbreaks;
+    }
+    System.arraycopy(breaks, i, breaks, i + 1, numOfBreaks - i);
+    breaks[i] = pos;
+    numOfBreaks++;
+  }
+
+  private void updateBreaks() {
+    if (text == null) { return; }
+    // TODO use Displayable width
+    width = DeviceFactory.getDevice().getDeviceDisplay().getWidth() - widthDecreaser;
+    int prevIndex = 0;
+    int canBreak = 0;
+    numOfBreaks = 0;
+    Font f = Font.getDefaultFont();
+    for (int i = 0; i < text.length(); i++) {
+      if (text.charAt(i) == ' ') {
+        canBreak = i + 1;
+      }
+      if (text.charAt(i) == '\n') {
+        insertBreak(i);
+        canBreak = 0;
+        prevIndex = i + 1;
+        continue;
+      }
+      if (f.substringWidth(text, prevIndex, i - prevIndex + 1) > width) {
+        if (canBreak != 0) {
+          insertBreak(canBreak);
+          i = canBreak;
+          prevIndex = i;
+        }
+        else {
+          insertBreak(i);
+          prevIndex = i + 1;
+        }
+        canBreak = 0;
+      }
+    }
+  }
 
 }

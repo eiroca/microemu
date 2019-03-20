@@ -1,201 +1,192 @@
-/*
- *  MicroEmulator
- *  Copyright (C) 2001 Bartek Teodorczyk <barteo@barteo.net>
+/**
+ * MicroEmulator Copyright (C) 2001 Bartek Teodorczyk <barteo@barteo.net>
  *
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives: 1. GNU Lesser General Public
+ * License (the "LGPL") version 2.1 or any newer version 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
- 
+
 package org.microemu.device.j2se;
 
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
 import javax.microedition.lcdui.Font;
-
 import org.microemu.device.impl.FontManagerImpl;
 
-public class J2SEFontManager implements FontManagerImpl
-{
-	private static String FACE_SYSTEM_NAME = "SansSerif";
-	private static String FACE_MONOSPACE_NAME = "Monospaced";
-	private static String FACE_PROPORTIONAL_NAME = "SansSerif";
+public class J2SEFontManager implements FontManagerImpl {
 
-	private static int SIZE_SMALL = 9;
-	private static int SIZE_MEDIUM = 11;
-	private static int SIZE_LARGE = 13;
+  private static String FACE_SYSTEM_NAME = "SansSerif";
+  private static String FACE_MONOSPACE_NAME = "Monospaced";
+  private static String FACE_PROPORTIONAL_NAME = "SansSerif";
 
-	private Hashtable fonts = new Hashtable();
+  private static int SIZE_SMALL = 9;
+  private static int SIZE_MEDIUM = 11;
+  private static int SIZE_LARGE = 13;
 
-	private boolean antialiasing;
-  
+  private final Hashtable fonts = new Hashtable();
 
-	org.microemu.device.impl.Font getFont(Font meFont)
-	{
-    	int key = 0;
-    	key |= meFont.getFace();
-    	key |= meFont.getStyle();
-    	key |= meFont.getSize();
-    	
-    	org.microemu.device.impl.Font result = (org.microemu.device.impl.Font) fonts.get(new Integer(key));
-	    
-	    if (result == null) {
-	    	String name = null;
-	    	if (meFont.getFace() == Font.FACE_SYSTEM) {
-	    		name = FACE_SYSTEM_NAME;
-	    	} else if (meFont.getFace() == Font.FACE_MONOSPACE) {
-	    		name = FACE_MONOSPACE_NAME;
-	    	} else if (meFont.getFace() == Font.FACE_PROPORTIONAL) {
-	    		name = FACE_PROPORTIONAL_NAME;
-	    	}
-	    	String style = ",";
-	    	if ((meFont.getStyle() & Font.STYLE_PLAIN) != 0) {
-	    		style += "plain,";
-	    	}
-	    	if ((meFont.getStyle() & Font.STYLE_BOLD) != 0) {
-	    		style += "bold,";
-	    	}
-	    	if ((meFont.getStyle() & Font.STYLE_ITALIC) != 0) {
-	    		style += "italic,";
-	    	}
-	    	if ((meFont.getStyle() & Font.STYLE_ITALIC) != 0) {
-	    		style += "underlined,";
-	    	}
-	    	style = style.substring(0, style.length() - 1);
-	    	int size = 0;
-	    	if (meFont.getSize() == Font.SIZE_SMALL) {
-	    		size = SIZE_SMALL;
-	    	} else if (meFont.getSize() == Font.SIZE_MEDIUM) {
-	    		size = SIZE_MEDIUM;
-	    	} else if (meFont.getSize() == Font.SIZE_LARGE) {
-	    		size = SIZE_LARGE;
-	    	}
-	    	result = new J2SESystemFont(name, style, size, antialiasing);
-	    	fonts.put(new Integer(key), result);
-	    }
-	    
-	    return result;
-	}
-	
-	
-	public void init()
-	{
-		fonts.clear();
-	}
-  
+  private boolean antialiasing;
 
-	public int charWidth(Font f, char ch)
-	{
-		return getFont(f).charWidth(ch);
-	}
+  org.microemu.device.impl.Font getFont(final Font meFont) {
+    int key = 0;
+    key |= meFont.getFace();
+    key |= meFont.getStyle();
+    key |= meFont.getSize();
 
+    org.microemu.device.impl.Font result = (org.microemu.device.impl.Font)fonts.get(new Integer(key));
 
-	public int charsWidth(Font f, char[] ch, int offset, int length) 
-	{
-		return getFont(f).charsWidth(ch, offset, length);
-	}
+    if (result == null) {
+      String name = null;
+      if (meFont.getFace() == Font.FACE_SYSTEM) {
+        name = J2SEFontManager.FACE_SYSTEM_NAME;
+      }
+      else if (meFont.getFace() == Font.FACE_MONOSPACE) {
+        name = J2SEFontManager.FACE_MONOSPACE_NAME;
+      }
+      else if (meFont.getFace() == Font.FACE_PROPORTIONAL) {
+        name = J2SEFontManager.FACE_PROPORTIONAL_NAME;
+      }
+      String style = ",";
+      if ((meFont.getStyle() & Font.STYLE_PLAIN) != 0) {
+        style += "plain,";
+      }
+      if ((meFont.getStyle() & Font.STYLE_BOLD) != 0) {
+        style += "bold,";
+      }
+      if ((meFont.getStyle() & Font.STYLE_ITALIC) != 0) {
+        style += "italic,";
+      }
+      if ((meFont.getStyle() & Font.STYLE_ITALIC) != 0) {
+        style += "underlined,";
+      }
+      style = style.substring(0, style.length() - 1);
+      int size = 0;
+      if (meFont.getSize() == Font.SIZE_SMALL) {
+        size = J2SEFontManager.SIZE_SMALL;
+      }
+      else if (meFont.getSize() == Font.SIZE_MEDIUM) {
+        size = J2SEFontManager.SIZE_MEDIUM;
+      }
+      else if (meFont.getSize() == Font.SIZE_LARGE) {
+        size = J2SEFontManager.SIZE_LARGE;
+      }
+      result = new J2SESystemFont(name, style, size, antialiasing);
+      fonts.put(new Integer(key), result);
+    }
 
-	public int getBaselinePosition(Font f) 
-	{
-		return getFont(f).getBaselinePosition();
-	}
+    return result;
+  }
 
+  @Override
+  public void init() {
+    fonts.clear();
+  }
 
-	public int getHeight(Font f)
-	{
-		return getFont(f).getHeight();
-	}
+  @Override
+  public int charWidth(final Font f, final char ch) {
+    return getFont(f).charWidth(ch);
+  }
 
+  @Override
+  public int charsWidth(final Font f, final char[] ch, final int offset, final int length) {
+    return getFont(f).charsWidth(ch, offset, length);
+  }
 
-	public int stringWidth(Font f, String str)
-	{
-		return getFont(f).stringWidth(str);
-	}
-	
-	
-	public int substringWidth(Font f, String str, int offset, int len)
-	{
-		return getFont(f).stringWidth(str.substring(offset, offset + len));
-	}
-	
-	
-	public boolean getAntialiasing() {
-		return antialiasing;
-	}
+  @Override
+  public int getBaselinePosition(final Font f) {
+    return getFont(f).getBaselinePosition();
+  }
 
+  @Override
+  public int getHeight(final Font f) {
+    return getFont(f).getHeight();
+  }
 
-	public void setAntialiasing(boolean antialiasing) 
-	{
-		this.antialiasing = antialiasing;
-		
-		Enumeration en = fonts.elements();
-		while (en.hasMoreElements()) {
-			J2SEFont font = (J2SEFont) en.nextElement();
-			font.setAntialiasing(antialiasing);
-		}
-	}
+  @Override
+  public int stringWidth(final Font f, final String str) {
+    return getFont(f).stringWidth(str);
+  }
 
+  @Override
+  public int substringWidth(final Font f, final String str, final int offset, final int len) {
+    return getFont(f).stringWidth(str.substring(offset, offset + len));
+  }
 
-	public void setFont(String face, String style, String size, org.microemu.device.impl.Font font) {
-		int key = 0;
-		
-		if (face.equalsIgnoreCase("system")) {
-			key |= Font.FACE_SYSTEM;
-		} else if (face.equalsIgnoreCase("monospace")) {
-			key |= Font.FACE_MONOSPACE;
-		} else if (face.equalsIgnoreCase("proportional")) {
-			key |= Font.FACE_PROPORTIONAL;
-		}
-		
-		String testStyle = style.toLowerCase();
-		if (testStyle.indexOf("plain") != -1) {
-			key |= Font.STYLE_PLAIN;
-		} 
-		if (testStyle.indexOf("bold") != -1) {
-			key |= Font.STYLE_BOLD;
-		} 
-		if (testStyle.indexOf("italic") != -1) {
-			key |= Font.STYLE_ITALIC;
-		} 
-		if (testStyle.indexOf("underlined") != -1) {
-			key |= Font.STYLE_UNDERLINED;
-		}
-		
-		if (size.equalsIgnoreCase("small")) {
-			key |= Font.SIZE_SMALL;
-		} else if (size.equalsIgnoreCase("medium")) {
-			key |= Font.SIZE_MEDIUM;
-		} else if (size.equalsIgnoreCase("large")) {
-			key |= Font.SIZE_LARGE;
-		}
-		
-		fonts.put(new Integer(key), font);
-	}
+  public boolean getAntialiasing() {
+    return antialiasing;
+  }
 
+  @Override
+  public void setAntialiasing(final boolean antialiasing) {
+    this.antialiasing = antialiasing;
 
-	public org.microemu.device.impl.Font createSystemFont(String defName, String defStyle, int defSize, boolean antialiasing) {
-		return new J2SESystemFont(defName, defStyle, defSize, antialiasing);
-	}
+    final Enumeration en = fonts.elements();
+    while (en.hasMoreElements()) {
+      final J2SEFont font = (J2SEFont)en.nextElement();
+      font.setAntialiasing(antialiasing);
+    }
+  }
 
-	public org.microemu.device.impl.Font createTrueTypeFont(URL defUrl, String defStyle, int defSize, boolean antialiasing) {
-		return new J2SETrueTypeFont(defUrl, defStyle, defSize, antialiasing);
-	}
+  @Override
+  public void setFont(final String face, final String style, final String size, final org.microemu.device.impl.Font font) {
+    int key = 0;
+
+    if (face.equalsIgnoreCase("system")) {
+      key |= Font.FACE_SYSTEM;
+    }
+    else if (face.equalsIgnoreCase("monospace")) {
+      key |= Font.FACE_MONOSPACE;
+    }
+    else if (face.equalsIgnoreCase("proportional")) {
+      key |= Font.FACE_PROPORTIONAL;
+    }
+
+    final String testStyle = style.toLowerCase();
+    if (testStyle.indexOf("plain") != -1) {
+      key |= Font.STYLE_PLAIN;
+    }
+    if (testStyle.indexOf("bold") != -1) {
+      key |= Font.STYLE_BOLD;
+    }
+    if (testStyle.indexOf("italic") != -1) {
+      key |= Font.STYLE_ITALIC;
+    }
+    if (testStyle.indexOf("underlined") != -1) {
+      key |= Font.STYLE_UNDERLINED;
+    }
+
+    if (size.equalsIgnoreCase("small")) {
+      key |= Font.SIZE_SMALL;
+    }
+    else if (size.equalsIgnoreCase("medium")) {
+      key |= Font.SIZE_MEDIUM;
+    }
+    else if (size.equalsIgnoreCase("large")) {
+      key |= Font.SIZE_LARGE;
+    }
+
+    fonts.put(new Integer(key), font);
+  }
+
+  @Override
+  public org.microemu.device.impl.Font createSystemFont(final String defName, final String defStyle, final int defSize, final boolean antialiasing) {
+    return new J2SESystemFont(defName, defStyle, defSize, antialiasing);
+  }
+
+  @Override
+  public org.microemu.device.impl.Font createTrueTypeFont(final URL defUrl, final String defStyle, final int defSize, final boolean antialiasing) {
+    return new J2SETrueTypeFont(defUrl, defStyle, defSize, antialiasing);
+  }
 
 }

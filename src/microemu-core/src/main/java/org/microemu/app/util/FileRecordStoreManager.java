@@ -1,25 +1,19 @@
 /**
- *  MicroEmulator
- *  Copyright (C) 2001-2007 Bartek Teodorczyk <barteo@barteo.net>
+ * MicroEmulator Copyright (C) 2001-2007 Bartek Teodorczyk <barteo@barteo.net>
  *
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives: 1. GNU Lesser General Public
+ * License (the "LGPL") version 2.1 or any newer version 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
 
 package org.microemu.app.util;
@@ -42,14 +36,12 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import javax.microedition.rms.InvalidRecordIDException;
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotFoundException;
 import javax.microedition.rms.RecordStoreNotOpenException;
-
 import org.microemu.MicroEmulator;
 import org.microemu.RecordStoreManager;
 import org.microemu.app.Config;
@@ -59,278 +51,274 @@ import org.microemu.util.RecordStoreImpl;
 
 public class FileRecordStoreManager implements RecordStoreManager {
 
-	private final static String RECORD_STORE_SUFFIX = ".rms";
+  private final static String RECORD_STORE_SUFFIX = ".rms";
 
-	private final static List replaceChars = new Vector();
+  private final static List replaceChars = new Vector();
 
-	private MicroEmulator emulator;
+  private MicroEmulator emulator;
 
-	private Hashtable testOpenRecordStores = new Hashtable();
+  private final Hashtable testOpenRecordStores = new Hashtable();
 
-	private ExtendedRecordListener recordListener = null;
+  private ExtendedRecordListener recordListener = null;
 
-	/* The context to be used when accessing files in Webstart */
-	private AccessControlContext acc;
+  /* The context to be used when accessing files in Webstart */
+  private AccessControlContext acc;
 
-	static {
-		replaceChars.add(":");
-		replaceChars.add("*");
-		replaceChars.add("?");
-		replaceChars.add("=");
-		replaceChars.add("|");
-		replaceChars.add("/");
-		replaceChars.add("\\");
-		replaceChars.add("\"");
-	}
+  static {
+    FileRecordStoreManager.replaceChars.add(":");
+    FileRecordStoreManager.replaceChars.add("*");
+    FileRecordStoreManager.replaceChars.add("?");
+    FileRecordStoreManager.replaceChars.add("=");
+    FileRecordStoreManager.replaceChars.add("|");
+    FileRecordStoreManager.replaceChars.add("/");
+    FileRecordStoreManager.replaceChars.add("\\");
+    FileRecordStoreManager.replaceChars.add("\"");
+  }
 
-	private FilenameFilter filter = new FilenameFilter() {
-		public boolean accept(File dir, String name) {
-			if (name.endsWith(RECORD_STORE_SUFFIX)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	};
+  private final FilenameFilter filter = (dir, name) -> {
+    if (name.endsWith(FileRecordStoreManager.RECORD_STORE_SUFFIX)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  };
 
-	public void init(MicroEmulator emulator) {
-		this.emulator = emulator;
-		this.acc = AccessController.getContext();
-	}
+  @Override
+  public void init(final MicroEmulator emulator) {
+    this.emulator = emulator;
+    acc = AccessController.getContext();
+  }
 
-	public String getName() {
-		return "File record store";
-	}
+  @Override
+  public String getName() {
+    return "File record store";
+  }
 
-	protected File getSuiteFolder() {
-		return new File(Config.getConfigPath(), "suite-" + emulator.getLauncher().getSuiteName());
-	}
+  protected File getSuiteFolder() {
+    return new File(Config.getConfigPath(), "suite-" + emulator.getLauncher().getSuiteName());
+  }
 
-	private static String escapeCharacter(String charcter) {
-		return "_%%" + (int) (charcter.charAt(0)) + "%%_";
-	}
+  private static String escapeCharacter(final String charcter) {
+    return "_%%" + (int)(charcter.charAt(0)) + "%%_";
+  }
 
-	static String recordStoreName2FileName(String recordStoreName) {
-		for (Iterator iterator = replaceChars.iterator(); iterator.hasNext();) {
-			String c = (String) iterator.next();
-			String newValue = escapeCharacter(c);
-			if (c.equals("\\")) {
-				c = "\\\\";
-			}
-			c = "[" + c + "]";
-			recordStoreName = recordStoreName.replaceAll(c, newValue);
-		}
-		return recordStoreName + RECORD_STORE_SUFFIX;
-	}
+  static String recordStoreName2FileName(String recordStoreName) {
+    for (final Iterator iterator = FileRecordStoreManager.replaceChars.iterator(); iterator.hasNext();) {
+      String c = (String)iterator.next();
+      final String newValue = FileRecordStoreManager.escapeCharacter(c);
+      if (c.equals("\\")) {
+        c = "\\\\";
+      }
+      c = "[" + c + "]";
+      recordStoreName = recordStoreName.replaceAll(c, newValue);
+    }
+    return recordStoreName + FileRecordStoreManager.RECORD_STORE_SUFFIX;
+  }
 
-	static String fileName2RecordStoreName(String fileName) {
-		for (Iterator iterator = replaceChars.iterator(); iterator.hasNext();) {
-			String c = (String) iterator.next();
-			String newValue = escapeCharacter(c);
-			if (c.equals("\\")) {
-				c = "\\\\";
-			}
-			fileName = fileName.replaceAll(newValue, c);
-		}
-		return fileName.substring(0, fileName.length() - RECORD_STORE_SUFFIX.length());
-	}
+  static String fileName2RecordStoreName(String fileName) {
+    for (final Iterator iterator = FileRecordStoreManager.replaceChars.iterator(); iterator.hasNext();) {
+      String c = (String)iterator.next();
+      final String newValue = FileRecordStoreManager.escapeCharacter(c);
+      if (c.equals("\\")) {
+        c = "\\\\";
+      }
+      fileName = fileName.replaceAll(newValue, c);
+    }
+    return fileName.substring(0, fileName.length() - FileRecordStoreManager.RECORD_STORE_SUFFIX.length());
+  }
 
-	public void deleteRecordStore(final String recordStoreName) throws RecordStoreNotFoundException,
-			RecordStoreException {
-		final File storeFile = new File(getSuiteFolder(), recordStoreName2FileName(recordStoreName));
+  @Override
+  public void deleteRecordStore(final String recordStoreName) throws RecordStoreNotFoundException,
+      RecordStoreException {
+    final File storeFile = new File(getSuiteFolder(), FileRecordStoreManager.recordStoreName2FileName(recordStoreName));
 
-		RecordStoreImpl recordStoreImpl = (RecordStoreImpl) testOpenRecordStores.get(storeFile.getName());
-		if (recordStoreImpl != null && recordStoreImpl.isOpen()) {
-			throw new RecordStoreException();
-		}
+    RecordStoreImpl recordStoreImpl = (RecordStoreImpl)testOpenRecordStores.get(storeFile.getName());
+    if ((recordStoreImpl != null) && recordStoreImpl.isOpen()) { throw new RecordStoreException(); }
 
-		try {
-			recordStoreImpl = loadFromDisk(storeFile);
-		} catch (FileNotFoundException ex) {
-			throw new RecordStoreNotFoundException(recordStoreName);
-		}
+    try {
+      recordStoreImpl = loadFromDisk(storeFile);
+    }
+    catch (final FileNotFoundException ex) {
+      throw new RecordStoreNotFoundException(recordStoreName);
+    }
 
-		try {
-			AccessController.doPrivileged(new PrivilegedExceptionAction() {
-				public Object run() throws FileNotFoundException {
-					storeFile.delete();
-					fireRecordStoreListener(ExtendedRecordListener.RECORDSTORE_DELETE, recordStoreName);
-					return null;
-				}
-			}, acc);
-		} catch (PrivilegedActionException e) {
-			Logger.error("Unable remove file " + storeFile, e);
-			throw new RecordStoreException();
-		}
-	}
+    try {
+      AccessController.doPrivileged((PrivilegedExceptionAction)() -> {
+        storeFile.delete();
+        fireRecordStoreListener(ExtendedRecordListener.RECORDSTORE_DELETE, recordStoreName);
+        return null;
+      }, acc);
+    }
+    catch (final PrivilegedActionException e) {
+      Logger.error("Unable remove file " + storeFile, e);
+      throw new RecordStoreException();
+    }
+  }
 
-	public RecordStore openRecordStore(String recordStoreName, boolean createIfNecessary) throws RecordStoreException {
-		File storeFile = new File(getSuiteFolder(), recordStoreName2FileName(recordStoreName));
+  @Override
+  public RecordStore openRecordStore(final String recordStoreName, final boolean createIfNecessary) throws RecordStoreException {
+    final File storeFile = new File(getSuiteFolder(), FileRecordStoreManager.recordStoreName2FileName(recordStoreName));
 
-		RecordStoreImpl recordStoreImpl;
-		try {
-			recordStoreImpl = loadFromDisk(storeFile);
-			recordStoreImpl.setOpen(true);
-		} catch (FileNotFoundException e) {
-			if (!createIfNecessary) {
-				throw new RecordStoreNotFoundException(recordStoreName);
-			}
-			recordStoreImpl = new RecordStoreImpl(this, recordStoreName);
-			recordStoreImpl.setOpen(true);
-			saveToDisk(storeFile, recordStoreImpl);
-		}
-		if (recordListener != null) {
-			recordStoreImpl.addRecordListener(recordListener);
-		}
+    RecordStoreImpl recordStoreImpl;
+    try {
+      recordStoreImpl = loadFromDisk(storeFile);
+      recordStoreImpl.setOpen(true);
+    }
+    catch (final FileNotFoundException e) {
+      if (!createIfNecessary) { throw new RecordStoreNotFoundException(recordStoreName); }
+      recordStoreImpl = new RecordStoreImpl(this, recordStoreName);
+      recordStoreImpl.setOpen(true);
+      saveToDisk(storeFile, recordStoreImpl);
+    }
+    if (recordListener != null) {
+      recordStoreImpl.addRecordListener(recordListener);
+    }
 
-		testOpenRecordStores.put(storeFile.getName(), recordStoreImpl);
+    testOpenRecordStores.put(storeFile.getName(), recordStoreImpl);
 
-		fireRecordStoreListener(ExtendedRecordListener.RECORDSTORE_OPEN, recordStoreName);
+    fireRecordStoreListener(ExtendedRecordListener.RECORDSTORE_OPEN, recordStoreName);
 
-		return recordStoreImpl;
-	}
+    return recordStoreImpl;
+  }
 
-	public String[] listRecordStores() {
-		String[] result;
-		try {
-			result = (String[]) AccessController.doPrivileged(new PrivilegedExceptionAction() {
-				public Object run() {
-					return getSuiteFolder().list(filter);
-				}
-			}, acc);
-		} catch (PrivilegedActionException e) {
-			Logger.error("Unable to access storeFiles", e);
-			return null;
-		}
-		if (result != null) {
-			if (result.length == 0) {
-				result = null;
-			} else {
-				for (int i = 0; i < result.length; i++) {
-					result[i] = fileName2RecordStoreName(result[i]);
-				}
-			}
-		}
-		return result;
-	}
+  @Override
+  public String[] listRecordStores() {
+    String[] result;
+    try {
+      result = (String[])AccessController.doPrivileged((PrivilegedExceptionAction)() -> getSuiteFolder().list(filter), acc);
+    }
+    catch (final PrivilegedActionException e) {
+      Logger.error("Unable to access storeFiles", e);
+      return null;
+    }
+    if (result != null) {
+      if (result.length == 0) {
+        result = null;
+      }
+      else {
+        for (int i = 0; i < result.length; i++) {
+          result[i] = FileRecordStoreManager.fileName2RecordStoreName(result[i]);
+        }
+      }
+    }
+    return result;
+  }
 
-	public void deleteRecord(RecordStoreImpl recordStoreImpl, int recordId) throws RecordStoreNotOpenException, RecordStoreException 
-	{
-		saveRecord(recordStoreImpl, recordId);
-	}
-	
-	public void loadRecord(RecordStoreImpl recordStoreImpl, int recordId)
-			throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException 
-	{
-		// records are loaded when record store opens
-	}
+  @Override
+  public void deleteRecord(final RecordStoreImpl recordStoreImpl, final int recordId) throws RecordStoreNotOpenException, RecordStoreException {
+    saveRecord(recordStoreImpl, recordId);
+  }
 
-	public void saveRecord(RecordStoreImpl recordStoreImpl, int recordId) throws RecordStoreNotOpenException, RecordStoreException 
-	{
-		File storeFile = new File(getSuiteFolder(), recordStoreName2FileName(recordStoreImpl.getName()));
+  @Override
+  public void loadRecord(final RecordStoreImpl recordStoreImpl, final int recordId)
+      throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException {
+    // records are loaded when record store opens
+  }
 
-		saveToDisk(storeFile, recordStoreImpl);
-	}
+  @Override
+  public void saveRecord(final RecordStoreImpl recordStoreImpl, final int recordId) throws RecordStoreNotOpenException, RecordStoreException {
+    final File storeFile = new File(getSuiteFolder(), FileRecordStoreManager.recordStoreName2FileName(recordStoreImpl.getName()));
 
-	public void init() {
-	}
+    saveToDisk(storeFile, recordStoreImpl);
+  }
 
-	public void deleteStores() {
-		String[] stores = listRecordStores();
-		for (int i = 0; i < stores.length; i++) {
-			String store = stores[i];
-			try {
-				deleteRecordStore(store);
-			} catch (RecordStoreException e) {
-				Logger.debug("deleteRecordStore", e);
-			}
-		}
-	}
+  public void init() {
+  }
 
-	private RecordStoreImpl loadFromDisk(final File recordStoreFile) throws FileNotFoundException {
-		try {
-			return (RecordStoreImpl) AccessController.doPrivileged(new PrivilegedExceptionAction() {
-				public Object run() throws FileNotFoundException {
-					return loadFromDiskSecure(recordStoreFile);
-				}
-			}, acc);
-		} catch (PrivilegedActionException e) {
-			if (e.getCause() instanceof FileNotFoundException) {
-				throw (FileNotFoundException) e.getCause();
-			}
-			Logger.error("Unable access file " + recordStoreFile, e);
-			throw new FileNotFoundException();
-		}
-	}
+  @Override
+  public void deleteStores() {
+    final String[] stores = listRecordStores();
+    for (final String store : stores) {
+      try {
+        deleteRecordStore(store);
+      }
+      catch (final RecordStoreException e) {
+        Logger.debug("deleteRecordStore", e);
+      }
+    }
+  }
 
-	private RecordStoreImpl loadFromDiskSecure(File recordStoreFile) throws FileNotFoundException {
-		RecordStoreImpl store = null;
-		try {
-			store = new RecordStoreImpl(this);
-			DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(recordStoreFile)));
-			int size = store.readHeader(dis);
-			for (int i = 0; i < size; i++) {
-				store.readRecord(dis);
-			}
-			dis.close();
-		} catch (FileNotFoundException e) {
-			throw e;
-		} catch (IOException e) {
-			Logger.error("RecordStore.loadFromDisk: ERROR reading " + recordStoreFile.getName(), e);
-		}
-		return store;
-	}
+  private RecordStoreImpl loadFromDisk(final File recordStoreFile) throws FileNotFoundException {
+    try {
+      return (RecordStoreImpl)AccessController.doPrivileged((PrivilegedExceptionAction)() -> loadFromDiskSecure(recordStoreFile), acc);
+    }
+    catch (final PrivilegedActionException e) {
+      if (e.getCause() instanceof FileNotFoundException) { throw (FileNotFoundException)e.getCause(); }
+      Logger.error("Unable access file " + recordStoreFile, e);
+      throw new FileNotFoundException();
+    }
+  }
 
-	private void saveToDisk(final File recordStoreFile, final RecordStoreImpl recordStore) throws RecordStoreException {
-		try {
-			AccessController.doPrivileged(new PrivilegedExceptionAction() {
-				public Object run() throws RecordStoreException {
-					saveToDiskSecure(recordStoreFile, recordStore);
-					return null;
-				}
-			}, acc);
-		} catch (PrivilegedActionException e) {
-			if (e.getCause() instanceof RecordStoreException) {
-				throw (RecordStoreException) e.getCause();
-			}
-			Logger.error("Unable access file " + recordStoreFile, e);
-			throw new RecordStoreException();
-		}
-	}
+  private RecordStoreImpl loadFromDiskSecure(final File recordStoreFile) throws FileNotFoundException {
+    RecordStoreImpl store = null;
+    try {
+      store = new RecordStoreImpl(this);
+      final DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(recordStoreFile)));
+      final int size = store.readHeader(dis);
+      for (int i = 0; i < size; i++) {
+        store.readRecord(dis);
+      }
+      dis.close();
+    }
+    catch (final FileNotFoundException e) {
+      throw e;
+    }
+    catch (final IOException e) {
+      Logger.error("RecordStore.loadFromDisk: ERROR reading " + recordStoreFile.getName(), e);
+    }
+    return store;
+  }
 
-	private synchronized void saveToDiskSecure(final File recordStoreFile, final RecordStoreImpl recordStore)
-			throws RecordStoreException {
-		if (!recordStoreFile.getParentFile().exists()) {
-			if (!recordStoreFile.getParentFile().mkdirs()) {
-				throw new RecordStoreException("Unable to create recordStore directory");
-			}
-		}
-		try {
-			DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(recordStoreFile)));
-			recordStore.writeHeader(dos);
-			RecordEnumeration re = recordStore.enumerateRecords(null, null, false);
-			while (re.hasNextElement()) {
-				recordStore.writeRecord(dos, re.nextRecordId());
-			}
-			dos.close();
-		} catch (IOException e) {
-			Logger.error("RecordStore.saveToDisk: ERROR writting object to " + recordStoreFile.getName(), e);
-			throw new RecordStoreException(e.getMessage());
-		}
-	}
+  private void saveToDisk(final File recordStoreFile, final RecordStoreImpl recordStore) throws RecordStoreException {
+    try {
+      AccessController.doPrivileged((PrivilegedExceptionAction)() -> {
+        saveToDiskSecure(recordStoreFile, recordStore);
+        return null;
+      }, acc);
+    }
+    catch (final PrivilegedActionException e) {
+      if (e.getCause() instanceof RecordStoreException) { throw (RecordStoreException)e.getCause(); }
+      Logger.error("Unable access file " + recordStoreFile, e);
+      throw new RecordStoreException();
+    }
+  }
 
-	public int getSizeAvailable(RecordStoreImpl recordStoreImpl) {
-		// FIXME should return free space on device
-		return 1024 * 1024;
-	}
+  private synchronized void saveToDiskSecure(final File recordStoreFile, final RecordStoreImpl recordStore)
+      throws RecordStoreException {
+    if (!recordStoreFile.getParentFile().exists()) {
+      if (!recordStoreFile.getParentFile().mkdirs()) { throw new RecordStoreException("Unable to create recordStore directory"); }
+    }
+    try {
+      final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(recordStoreFile)));
+      recordStore.writeHeader(dos);
+      final RecordEnumeration re = recordStore.enumerateRecords(null, null, false);
+      while (re.hasNextElement()) {
+        recordStore.writeRecord(dos, re.nextRecordId());
+      }
+      dos.close();
+    }
+    catch (final IOException e) {
+      Logger.error("RecordStore.saveToDisk: ERROR writting object to " + recordStoreFile.getName(), e);
+      throw new RecordStoreException(e.getMessage());
+    }
+  }
 
-	public void setRecordListener(ExtendedRecordListener recordListener) {
-		this.recordListener = recordListener;
-	}
+  @Override
+  public int getSizeAvailable(final RecordStoreImpl recordStoreImpl) {
+    // FIXME should return free space on device
+    return 1024 * 1024;
+  }
 
-	public void fireRecordStoreListener(int type, String recordStoreName) {
-		if (recordListener != null) {
-			recordListener.recordStoreEvent(type, System.currentTimeMillis(), recordStoreName);
-		}
-	}
+  @Override
+  public void setRecordListener(final ExtendedRecordListener recordListener) {
+    this.recordListener = recordListener;
+  }
+
+  @Override
+  public void fireRecordStoreListener(final int type, final String recordStoreName) {
+    if (recordListener != null) {
+      recordListener.recordStoreEvent(type, System.currentTimeMillis(), recordStoreName);
+    }
+  }
 }

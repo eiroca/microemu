@@ -1,6 +1,8 @@
 /**
- * MicroEmulator - Copyright (C) 2006 Bartek Teodorczyk <barteo@barteo.net>
- *
+ * MicroEmulator
+ * 
+ * Copyright (C) 2001 Bartek Teodorczyk <barteo@barteo.net>
+ * 
  * It is licensed under the following two licenses as alternatives:
  * 
  * 1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
@@ -17,6 +19,7 @@
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the LGPL or the AL for the specific language governing permissions and
  * limitations.
+ * 
  */
 package javax.microedition.m3g;
 

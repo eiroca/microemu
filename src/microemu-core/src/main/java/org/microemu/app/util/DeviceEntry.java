@@ -1,25 +1,19 @@
 /**
- *  MicroEmulator
- *  Copyright (C) 2002 Bartek Teodorczyk <barteo@barteo.net>
+ * MicroEmulator Copyright (C) 2002 Bartek Teodorczyk <barteo@barteo.net>
  *
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives: 1. GNU Lesser General Public
+ * License (the "LGPL") version 2.1 or any newer version 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
 
 package org.microemu.app.util;
@@ -27,98 +21,100 @@ package org.microemu.app.util;
 import org.microemu.device.EmulatorContext;
 
 public class DeviceEntry {
-	
-	private String name;
 
-	private String fileName;
+  private final String name;
 
-	private String descriptorLocation;
+  private String fileName;
 
-	private boolean defaultDevice;
+  private final String descriptorLocation;
 
-	private boolean canRemove;
+  private boolean defaultDevice;
 
-	/**
-	 * @deprecated
-	 */
-	private String className;
+  private final boolean canRemove;
 
-	/**
-	 * @deprecated
-	 */
-	private EmulatorContext emulatorContext;
+  /**
+   * @deprecated
+   */
+  @Deprecated
+  private String className;
 
-	public DeviceEntry(String name, String fileName, String descriptorLocation, boolean defaultDevice) {
-		this(name, fileName, descriptorLocation, defaultDevice, true);
-	}
+  /**
+   * @deprecated
+   */
+  @Deprecated
+  private EmulatorContext emulatorContext;
 
-	public DeviceEntry(String name, String fileName, String descriptorLocation, boolean defaultDevice, boolean canRemove) {
-		this.name = name;
-		this.fileName = fileName;
-		this.descriptorLocation = descriptorLocation;
-		this.defaultDevice = defaultDevice;
-		this.canRemove = canRemove;
-	}
+  public DeviceEntry(final String name, final String fileName, final String descriptorLocation, final boolean defaultDevice) {
+    this(name, fileName, descriptorLocation, defaultDevice, true);
+  }
 
-	/**
-	 * @deprecated use new DeviceEntry(String name, String fileName, String descriptorLocation, boolean defaultDevice);
-	 */
-	public DeviceEntry(String name, String fileName, boolean defaultDevice, String className,
-			EmulatorContext emulatorContext) {
-		this(name, fileName, null, defaultDevice, true);
+  public DeviceEntry(final String name, final String fileName, final String descriptorLocation, final boolean defaultDevice, final boolean canRemove) {
+    this.name = name;
+    this.fileName = fileName;
+    this.descriptorLocation = descriptorLocation;
+    this.defaultDevice = defaultDevice;
+    this.canRemove = canRemove;
+  }
 
-		this.className = className;
-		this.emulatorContext = emulatorContext;
-	}
+  /**
+   * @deprecated use new DeviceEntry(String name, String fileName, String descriptorLocation,
+   *             boolean defaultDevice);
+   */
+  @Deprecated
+  public DeviceEntry(final String name, final String fileName, final boolean defaultDevice, final String className, final EmulatorContext emulatorContext) {
+    this(name, fileName, null, defaultDevice, true);
 
-	public boolean canRemove() {
-		return canRemove;
-	}
+    this.className = className;
+    this.emulatorContext = emulatorContext;
+  }
 
-	public String getDescriptorLocation() {
-		return descriptorLocation;
-	}
+  public boolean canRemove() {
+    return canRemove;
+  }
 
-	public String getFileName() {
-		return fileName;
-	}
+  public String getDescriptorLocation() {
+    return descriptorLocation;
+  }
 
-	/**
-	 * @deprecated
-	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+  public String getFileName() {
+    return fileName;
+  }
 
-	public String getName() {
-		return name;
-	}
+  /**
+   * @deprecated
+   */
+  @Deprecated
+  public void setFileName(final String fileName) {
+    this.fileName = fileName;
+  }
 
-	public boolean isDefaultDevice() {
-		return defaultDevice;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setDefaultDevice(boolean b) {
-		defaultDevice = b;
-	}
+  public boolean isDefaultDevice() {
+    return defaultDevice;
+  }
 
-	public boolean equals(DeviceEntry test) {
-		if (test == null) {
-			return false;
-		}
-		if (test.getDescriptorLocation().equals(getDescriptorLocation())) {
-			return true;
-		}
+  public void setDefaultDevice(final boolean b) {
+    defaultDevice = b;
+  }
 
-		return false;
-	}
+  public boolean equals(final DeviceEntry test) {
+    if (test == null) { return false; }
+    if (test.getDescriptorLocation().equals(getDescriptorLocation())) { return true; }
 
-	public String toString() {
-		if (defaultDevice) {
-			return name + " (default)";
-		} else {
-			return name;
-		}
-	}
+    return false;
+  }
+
+  @Override
+  public String toString() {
+    if (defaultDevice) {
+      return name + " (default)";
+    }
+    else {
+      return name;
+    }
+  }
 
 }

@@ -1,25 +1,22 @@
-/*
- *  MicroEmulator
- *  Copyright (C) 2001 Bartek Teodorczyk <barteo@barteo.net>
+/**
+ * MicroEmulator Copyright (C) 2001 Bartek Teodorczyk <barteo@barteo.net>
  *
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives:
+ * 
+ * 1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
+ * 
+ * 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
 
 package javax.microedition.lcdui;
@@ -29,93 +26,96 @@ import org.microemu.device.ui.ImageStringItemUI;
 
 public class StringItem extends Item {
 
-	StringComponent stringComponent;
-	private int appearanceMode;
+  StringComponent stringComponent;
+  private int appearanceMode;
 
-	public StringItem(String label, String text) {
-		this(label, text, PLAIN);
-	}
-	
-	public StringItem(String label, String text, int appearanceMode) {
-		super(label);
-		this.appearanceMode = appearanceMode;
-		super.setUI(DeviceFactory.getDevice().getUIFactory().createImageStringItemUI(this));
-		
-		stringComponent = new StringComponent();
-		setText(text);
-	}
-	
-	public int getAppearanceMode() {
-		return appearanceMode;
-	}
-	
-	public Font getFont() {
-    	// TODO implement
-		return Font.getDefaultFont();
-	}
-	
-	public void setFont(Font font) {
-    	// TODO implement
-	}
+  public StringItem(String label, String text) {
+    this(label, text, PLAIN);
+  }
 
-	public void setPreferredSize(int width, int height) {
-    	// TODO implement
-	}
-	
-	public String getText() {
-		return stringComponent.getText();
-	}
+  public StringItem(String label, String text, int appearanceMode) {
+    super(label);
+    this.appearanceMode = appearanceMode;
+    super.setUI(DeviceFactory.getDevice().getUIFactory().createImageStringItemUI(this));
+    stringComponent = new StringComponent();
+    setText(text);
+  }
 
-	public void setText(String text) {
-		if (ui.getClass().getName().equals("org.microemu.android.device.ui.AndroidImageStringItemUI")) {
-			((ImageStringItemUI) ui).setText(text);
-		}
+  public int getAppearanceMode() {
+    return appearanceMode;
+  }
 
-		stringComponent.setText(text);
-		repaint();
-	}
+  public Font getFont() {
+    // TODO implement
+    return Font.getDefaultFont();
+  }
 
-	int getHeight() {
-		return super.getHeight() + stringComponent.getHeight();
-	}
+  public void setFont(Font font) {
+    // TODO implement
+  }
 
-	int paint(Graphics g) {
-		super.paintContent(g);
+  public void setPreferredSize(int width, int height) {
+    // TODO implement
+  }
 
-		g.translate(0, super.getHeight());
-		stringComponent.paint(g);
-		g.translate(0, -super.getHeight());
+  public String getText() {
+    return stringComponent.getText();
+  }
 
-		return getHeight();
-	}
+  public void setText(String text) {
+    if (ui.getClass().getName().equals("org.microemu.android.device.ui.AndroidImageStringItemUI")) {
+      ((ImageStringItemUI)ui).setText(text);
+    }
 
-	int traverse(int gameKeyCode, int top, int bottom, boolean action) {
-		Font f = Font.getDefaultFont();
+    stringComponent.setText(text);
+    repaint();
+  }
 
-		if (gameKeyCode == Canvas.UP) {
-			if (top > 0) {
-				if ((top % f.getHeight()) == 0) {
-					return -f.getHeight();
-				} else {
-					return -(top % f.getHeight());
-				}
-			} else {
-				return Item.OUTOFITEM;
-			}
-		}
-		if (gameKeyCode == Canvas.DOWN) {
-			if (bottom < getHeight()) {
-				if (getHeight() - bottom < f.getHeight()) {
-					return getHeight() - bottom;
-				} else {
-					return f.getHeight();
-				}
-			} else {
-				return Item.OUTOFITEM;
-			}
-		}
+  int getHeight() {
+    return super.getHeight() + stringComponent.getHeight();
+  }
 
-		return 0;
-	}
+  int paint(Graphics g) {
+    super.paintContent(g);
+
+    g.translate(0, super.getHeight());
+    stringComponent.paint(g);
+    g.translate(0, -super.getHeight());
+
+    return getHeight();
+  }
+
+  int traverse(int gameKeyCode, int top, int bottom, boolean action) {
+    Font f = Font.getDefaultFont();
+
+    if (gameKeyCode == Canvas.UP) {
+      if (top > 0) {
+        if ((top % f.getHeight()) == 0) {
+          return -f.getHeight();
+        }
+        else {
+          return -(top % f.getHeight());
+        }
+      }
+      else {
+        return Item.OUTOFITEM;
+      }
+    }
+    if (gameKeyCode == Canvas.DOWN) {
+      if (bottom < getHeight()) {
+        if (getHeight() - bottom < f.getHeight()) {
+          return getHeight() - bottom;
+        }
+        else {
+          return f.getHeight();
+        }
+      }
+      else {
+        return Item.OUTOFITEM;
+      }
+    }
+
+    return 0;
+  }
 
 }

@@ -1,25 +1,19 @@
-/*
- *  MicroEmulator
- *  Copyright (C) 2001-2003 Bartek Teodorczyk <barteo@barteo.net>
+/**
+ * MicroEmulator Copyright (C) 2001-2003 Bartek Teodorczyk <barteo@barteo.net>
  *
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives: 1. GNU Lesser General Public
+ * License (the "LGPL") version 2.1 or any newer version 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
 
 package org.microemu.cldc.socket;
@@ -33,152 +27,150 @@ import java.net.Socket;
 
 public class SocketConnection implements javax.microedition.io.SocketConnection {
 
-	protected Socket socket;
-	
-	public SocketConnection() {		
-	}
+  protected Socket socket;
 
-	public SocketConnection(String host, int port) throws IOException {
-		this.socket = new Socket(host, port);
-	}
-	
-	public SocketConnection(Socket socket) {
-		this.socket = socket;
-	}
+  public SocketConnection() {
+  }
 
-	public String getAddress() throws IOException {
-		if (socket == null || socket.isClosed()) {
-			throw new IOException();
-		}
+  public SocketConnection(final String host, final int port) throws IOException {
+    socket = new Socket(host, port);
+  }
 
-		return socket.getInetAddress().toString();
-	}
+  public SocketConnection(final Socket socket) {
+    this.socket = socket;
+  }
 
-	public String getLocalAddress() throws IOException {
-		if (socket == null || socket.isClosed()) {
-			throw new IOException();
-		}
+  @Override
+  public String getAddress() throws IOException {
+    if ((socket == null) || socket.isClosed()) { throw new IOException(); }
 
-		return socket.getLocalAddress().toString();
-	}
+    return socket.getInetAddress().toString();
+  }
 
-	public int getLocalPort() throws IOException {
-		if (socket == null || socket.isClosed()) {
-			throw new IOException();
-		}
+  @Override
+  public String getLocalAddress() throws IOException {
+    if ((socket == null) || socket.isClosed()) { throw new IOException(); }
 
-		return socket.getLocalPort();
-	}
+    return socket.getLocalAddress().toString();
+  }
 
-	public int getPort() throws IOException {
-		if (socket == null || socket.isClosed()) {
-			throw new IOException();
-		}
+  @Override
+  public int getLocalPort() throws IOException {
+    if ((socket == null) || socket.isClosed()) { throw new IOException(); }
 
-		return socket.getPort();
-	}
+    return socket.getLocalPort();
+  }
 
-	public int getSocketOption(byte option) throws IllegalArgumentException,
-			IOException {
-		if (socket != null && socket.isClosed()) {
-			throw new IOException();
-		}
-		switch (option) {
-		case DELAY:
-			if (socket.getTcpNoDelay()) {
-				return 1;
-			} else {
-				return 0;
-			}
-		case LINGER:
-			int value = socket.getSoLinger();
-			if (value == -1) {
-				return 0;
-			} else {
-				return value;
-			}
-		case KEEPALIVE:
-			if (socket.getKeepAlive()) {
-				return 1;
-			} else {
-				return 0;
-			}
-		case RCVBUF:
-			return socket.getReceiveBufferSize();
-		case SNDBUF:
-			return socket.getSendBufferSize();
-		default:
-			throw new IllegalArgumentException();
-		}
-	}
+  @Override
+  public int getPort() throws IOException {
+    if ((socket == null) || socket.isClosed()) { throw new IOException(); }
 
-	public void setSocketOption(byte option, int value)
-			throws IllegalArgumentException, IOException {
-		if (socket.isClosed()) {
-			throw new IOException();
-		}
-		switch (option) {
-		case DELAY:
-			int delay;
-			if (value == 0) {
-				delay = 0;
-			} else {
-				delay = 1;
-			}
-			socket.setTcpNoDelay(delay == 0 ? false : true);
-			break;
-		case LINGER:
-			if (value < 0) {
-				throw new IllegalArgumentException();
-			}
-			socket.setSoLinger(value == 0 ? false : true, value);
-			break;
-		case KEEPALIVE:
-			int keepalive;
-			if (value == 0) {
-				keepalive = 0;
-			} else {
-				keepalive = 1;
-			}
-			socket.setKeepAlive(keepalive == 0 ? false : true);
-			break;
-		case RCVBUF:
-			if (value <= 0) {
-				throw new IllegalArgumentException();
-			}
-			socket.setReceiveBufferSize(value);
-			break;
-		case SNDBUF:
-			if (value <= 0) {
-				throw new IllegalArgumentException();
-			}
-			socket.setSendBufferSize(value);
-			break;
-		default:
-			throw new IllegalArgumentException();
-		}
-	}
+    return socket.getPort();
+  }
 
-	public void close() throws IOException {
-		// TODO fix differences between Java ME and Java SE
-		
-		socket.close();
-	}
+  @Override
+  public int getSocketOption(final byte option) throws IllegalArgumentException,
+      IOException {
+    if ((socket != null) && socket.isClosed()) { throw new IOException(); }
+    switch (option) {
+      case DELAY:
+        if (socket.getTcpNoDelay()) {
+          return 1;
+        }
+        else {
+          return 0;
+        }
+      case LINGER:
+        final int value = socket.getSoLinger();
+        if (value == -1) {
+          return 0;
+        }
+        else {
+          return value;
+        }
+      case KEEPALIVE:
+        if (socket.getKeepAlive()) {
+          return 1;
+        }
+        else {
+          return 0;
+        }
+      case RCVBUF:
+        return socket.getReceiveBufferSize();
+      case SNDBUF:
+        return socket.getSendBufferSize();
+      default:
+        throw new IllegalArgumentException();
+    }
+  }
 
-	public InputStream openInputStream() throws IOException {
-		return socket.getInputStream();
-	}
+  @Override
+  public void setSocketOption(final byte option, final int value)
+      throws IllegalArgumentException, IOException {
+    if (socket.isClosed()) { throw new IOException(); }
+    switch (option) {
+      case DELAY:
+        int delay;
+        if (value == 0) {
+          delay = 0;
+        }
+        else {
+          delay = 1;
+        }
+        socket.setTcpNoDelay(delay == 0 ? false : true);
+        break;
+      case LINGER:
+        if (value < 0) { throw new IllegalArgumentException(); }
+        socket.setSoLinger(value == 0 ? false : true, value);
+        break;
+      case KEEPALIVE:
+        int keepalive;
+        if (value == 0) {
+          keepalive = 0;
+        }
+        else {
+          keepalive = 1;
+        }
+        socket.setKeepAlive(keepalive == 0 ? false : true);
+        break;
+      case RCVBUF:
+        if (value <= 0) { throw new IllegalArgumentException(); }
+        socket.setReceiveBufferSize(value);
+        break;
+      case SNDBUF:
+        if (value <= 0) { throw new IllegalArgumentException(); }
+        socket.setSendBufferSize(value);
+        break;
+      default:
+        throw new IllegalArgumentException();
+    }
+  }
 
-	public DataInputStream openDataInputStream() throws IOException {
-		return new DataInputStream(openInputStream());
-	}
+  @Override
+  public void close() throws IOException {
+    // TODO fix differences between Java ME and Java SE
 
-	public OutputStream openOutputStream() throws IOException {
-		return socket.getOutputStream();
-	}
+    socket.close();
+  }
 
-	public DataOutputStream openDataOutputStream() throws IOException {
-		return new DataOutputStream(openOutputStream());
-	}
+  @Override
+  public InputStream openInputStream() throws IOException {
+    return socket.getInputStream();
+  }
+
+  @Override
+  public DataInputStream openDataInputStream() throws IOException {
+    return new DataInputStream(openInputStream());
+  }
+
+  @Override
+  public OutputStream openOutputStream() throws IOException {
+    return socket.getOutputStream();
+  }
+
+  @Override
+  public DataOutputStream openDataOutputStream() throws IOException {
+    return new DataOutputStream(openOutputStream());
+  }
 
 }

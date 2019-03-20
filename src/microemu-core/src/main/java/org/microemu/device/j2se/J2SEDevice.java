@@ -1,25 +1,19 @@
-/*
- *  MicroEmulator
- *  Copyright (C) 2002 Bartek Teodorczyk <barteo@barteo.net>
+/**
+ * MicroEmulator Copyright (C) 2002 Bartek Teodorczyk <barteo@barteo.net>
  *
- *  It is licensed under the following two licenses as alternatives:
- *    1. GNU Lesser General Public License (the "LGPL") version 2.1 or any newer version
- *    2. Apache License (the "AL") Version 2.0
+ * It is licensed under the following two licenses as alternatives: 1. GNU Lesser General Public
+ * License (the "LGPL") version 2.1 or any newer version 2. Apache License (the "AL") Version 2.0
  *
- *  You may not use this file except in compliance with at least one of
- *  the above two licenses.
+ * You may not use this file except in compliance with at least one of the above two licenses.
  *
- *  You may obtain a copy of the LGPL at
- *      http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
+ * You may obtain a copy of the LGPL at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
  *
- *  You may obtain a copy of the AL at
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the AL at http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the LGPL or the AL for the specific language governing permissions and
- *  limitations.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the LGPL or the AL for the specific language governing permissions and
+ * limitations.
  */
 
 package org.microemu.device.j2se;
@@ -36,7 +30,6 @@ import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
-
 import org.microemu.CustomItemAccess;
 import org.microemu.device.impl.DeviceImpl;
 import org.microemu.device.impl.ui.CommandImplUI;
@@ -68,69 +61,83 @@ import org.microemu.device.ui.UIFactory;
 
 public class J2SEDevice extends DeviceImpl {
 
-	private UIFactory ui = new UIFactory() {
-		
-		public EventDispatcher createEventDispatcher(Display display) {
-			EventDispatcher eventDispatcher = new EventDispatcher();
-			Thread thread = new Thread(eventDispatcher, EventDispatcher.EVENT_DISPATCHER_NAME);
-			thread.setDaemon(true);
-			thread.start();
-			
-			return eventDispatcher;
-		}
+  private final UIFactory ui = new UIFactory() {
 
-		public CommandUI createCommandUI(Command command) {
-			return new CommandImplUI(command);
-		}
+    @Override
+    public EventDispatcher createEventDispatcher(final Display display) {
+      final EventDispatcher eventDispatcher = new EventDispatcher();
+      final Thread thread = new Thread(eventDispatcher, EventDispatcher.EVENT_DISPATCHER_NAME);
+      thread.setDaemon(true);
+      thread.start();
 
-		public AlertUI createAlertUI(Alert alert) {
-			return new J2SEAlertUI(alert);
-		}
+      return eventDispatcher;
+    }
 
-		public CanvasUI createCanvasUI(Canvas canvas) {
-			return new J2SECanvasUI(canvas);
-		}
-		
-		public FormUI createFormUI(Form form) {
-			return new J2SEFormUI(form);
-		}
+    @Override
+    public CommandUI createCommandUI(final Command command) {
+      return new CommandImplUI(command);
+    }
 
-		public ListUI createListUI(List list) {
-			return new J2SEListUI(list);
-		}
+    @Override
+    public AlertUI createAlertUI(final Alert alert) {
+      return new J2SEAlertUI(alert);
+    }
 
-		public TextBoxUI createTextBoxUI(TextBox textBox) {
-			return new J2SETextBoxUI(textBox);
-		}
+    @Override
+    public CanvasUI createCanvasUI(final Canvas canvas) {
+      return new J2SECanvasUI(canvas);
+    }
 
-		public ChoiceGroupUI createChoiceGroupUI(ChoiceGroup choiceGroup, int choiceType) {
-			return new J2SEChoiceGroupUI(choiceGroup, choiceType);
-		}
+    @Override
+    public FormUI createFormUI(final Form form) {
+      return new J2SEFormUI(form);
+    }
 
-		public CustomItemUI createCustomItemUI(CustomItemAccess customItemAccess) {
-			return new J2SECustomItemUI(customItemAccess);
-		}
+    @Override
+    public ListUI createListUI(final List list) {
+      return new J2SEListUI(list);
+    }
 
-		public DateFieldUI createDateFieldUI(DateField dateField) {
-			return new J2SEDateFieldUI(dateField);
-		}
+    @Override
+    public TextBoxUI createTextBoxUI(final TextBox textBox) {
+      return new J2SETextBoxUI(textBox);
+    }
 
-		public GaugeUI createGaugeUI(Gauge gauge) {
-			return new J2SEGaugeUI(gauge);
-		}
+    @Override
+    public ChoiceGroupUI createChoiceGroupUI(final ChoiceGroup choiceGroup, final int choiceType) {
+      return new J2SEChoiceGroupUI(choiceGroup, choiceType);
+    }
 
-		public ImageStringItemUI createImageStringItemUI(Item item) {
-			return new J2SEImageStringItemUI(item);
-		}
-		
-		public TextFieldUI createTextFieldUI(TextField textField) {
-			return new J2SETextFieldUI(textField);
-		}
+    @Override
+    public CustomItemUI createCustomItemUI(final CustomItemAccess customItemAccess) {
+      return new J2SECustomItemUI(customItemAccess);
+    }
 
-	};
+    @Override
+    public DateFieldUI createDateFieldUI(final DateField dateField) {
+      return new J2SEDateFieldUI(dateField);
+    }
 
-	public UIFactory getUIFactory() {
-		return ui;
-	}
+    @Override
+    public GaugeUI createGaugeUI(final Gauge gauge) {
+      return new J2SEGaugeUI(gauge);
+    }
+
+    @Override
+    public ImageStringItemUI createImageStringItemUI(final Item item) {
+      return new J2SEImageStringItemUI(item);
+    }
+
+    @Override
+    public TextFieldUI createTextFieldUI(final TextField textField) {
+      return new J2SETextFieldUI(textField);
+    }
+
+  };
+
+  @Override
+  public UIFactory getUIFactory() {
+    return ui;
+  }
 
 }
