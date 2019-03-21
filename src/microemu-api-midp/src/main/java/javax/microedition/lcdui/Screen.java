@@ -75,6 +75,7 @@ public abstract class Screen extends Displayable {
     // TODO move to Displayable
     // TODO remove this StringComponent object when native UI is completed
     StringComponent title = new StringComponent(getTitle());
+    title.setCenter(true);
     contentHeight += title.paint(g);
     g.drawLine(0, title.getHeight(), getWidth(), title.getHeight());
     contentHeight += 1;

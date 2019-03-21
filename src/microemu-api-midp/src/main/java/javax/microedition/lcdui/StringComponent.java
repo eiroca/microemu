@@ -26,6 +26,7 @@ import org.microemu.device.DeviceFactory;
 class StringComponent {
 
   private String text;
+  private boolean center;
 
   private int breaks[] = new int[4];
 
@@ -123,6 +124,10 @@ class StringComponent {
     return text;
   }
 
+  public void setCenter(boolean center) {
+    this.center = center;
+  }
+
   public void invertPaint(boolean state) {
     synchronized (this) {
       invertPaint = state;
@@ -154,7 +159,7 @@ class StringComponent {
         else {
           g.setGrayScale(0);
         }
-        g.drawSubstring(text, prevIndex, breaks[i] - prevIndex, 0, y, 0);
+        g.drawSubstring(text, prevIndex, breaks[i] - prevIndex, (center ? width / 2 : 0), y, (center ? Graphics.HCENTER | Graphics.TOP : 0));
         prevIndex = breaks[i];
         y += f.getHeight();
       }
@@ -175,7 +180,7 @@ class StringComponent {
         else {
           g.setGrayScale(0);
         }
-        g.drawSubstring(text, prevIndex, text.length() - prevIndex, 0, y, 0);
+        g.drawSubstring(text, prevIndex, text.length() - prevIndex, (center ? width / 2 : 0), y, (center ? Graphics.HCENTER | Graphics.TOP : 0));
         y += f.getHeight();
       }
     }
