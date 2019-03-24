@@ -180,8 +180,7 @@ public class Main extends JFrame {
       }
 
       if (captureFileChooser.showSaveDialog(Main.this) == JFileChooser.APPROVE_OPTION) {
-        Config.setRecentDirectory("recentCaptureDirectory",
-            captureFileChooser.getCurrentDirectory().getAbsolutePath());
+        Config.setRecentDirectory("recentCaptureDirectory", captureFileChooser.getCurrentDirectory().getAbsolutePath());
         String name = captureFileChooser.getSelectedFile().getName();
         if (!name.toLowerCase().endsWith(".gif") && name.indexOf('.') == -1) {
           name = name + ".gif";
@@ -195,27 +194,26 @@ public class Main extends JFrame {
         menuStartCapture.setEnabled(false);
         menuStopCapture.setEnabled(true);
 
-        ((SwingDisplayComponent)emulatorContext.getDisplayComponent())
-            .addDisplayRepaintListener(new DisplayRepaintListener() {
+        ((SwingDisplayComponent)emulatorContext.getDisplayComponent()).addDisplayRepaintListener(new DisplayRepaintListener() {
 
-              long start = 0;
+          long start = 0;
 
-              public void repaintInvoked(Object repaintObject) {
-                synchronized (Main.this) {
-                  if (encoder != null) {
-                    if (start == 0) {
-                      start = System.currentTimeMillis();
-                    }
-                    else {
-                      long current = System.currentTimeMillis();
-                      encoder.setDelay((int)(current - start));
-                      start = current;
-                    }
-                    encoder.addFrame(((J2SEGraphicsSurface)repaintObject).getImage());
-                  }
+          public void repaintInvoked(Object repaintObject) {
+            synchronized (Main.this) {
+              if (encoder != null) {
+                if (start == 0) {
+                  start = System.currentTimeMillis();
                 }
+                else {
+                  long current = System.currentTimeMillis();
+                  encoder.setDelay((int)(current - start));
+                  start = current;
+                }
+                encoder.addFrame(((J2SEGraphicsSurface)repaintObject).getImage());
               }
-            });
+            }
+          }
+        });
       }
     }
 
@@ -311,24 +309,15 @@ public class Main extends JFrame {
       }
 
       if (logConsoleDialog != null) {
-        Config.setWindow(
-            "logConsole", new Rectangle(logConsoleDialog.getX(), logConsoleDialog.getY(),
-                logConsoleDialog.getWidth(), logConsoleDialog.getHeight()),
-            logConsoleDialog.isVisible());
+        Config.setWindow("logConsole", new Rectangle(logConsoleDialog.getX(), logConsoleDialog.getY(), logConsoleDialog.getWidth(), logConsoleDialog.getHeight()), logConsoleDialog.isVisible());
       }
       if (recordStoreManagerDialog != null) {
-        Config.setWindow("recordStoreManager",
-            new Rectangle(recordStoreManagerDialog.getX(), recordStoreManagerDialog.getY(),
-                recordStoreManagerDialog.getWidth(), recordStoreManagerDialog.getHeight()),
-            recordStoreManagerDialog.isVisible());
+        Config.setWindow("recordStoreManager", new Rectangle(recordStoreManagerDialog.getX(), recordStoreManagerDialog.getY(), recordStoreManagerDialog.getWidth(), recordStoreManagerDialog.getHeight()), recordStoreManagerDialog.isVisible());
       }
       if (scaledDisplayFrame != null) {
-        Config.setWindow("scaledDisplay",
-            new Rectangle(scaledDisplayFrame.getX(), scaledDisplayFrame.getY(), 0, 0), false);
+        Config.setWindow("scaledDisplay", new Rectangle(scaledDisplayFrame.getX(), scaledDisplayFrame.getY(), 0, 0), false);
       }
-      Config.setWindow("main",
-          new Rectangle(Main.this.getX(), Main.this.getY(), Main.this.getWidth(), Main.this.getHeight()),
-          true);
+      Config.setWindow("main", new Rectangle(Main.this.getX(), Main.this.getY(), Main.this.getWidth(), Main.this.getHeight()), true);
 
       System.exit(0);
     }
@@ -342,8 +331,7 @@ public class Main extends JFrame {
         int restartMidlet = 1;
         if (MIDletBridge.getCurrentMIDlet() != common.getLauncher()) {
           restartMidlet = JOptionPane.showConfirmDialog(Main.this,
-              "Changing device may trigger MIDlet to the unpredictable state and restart of MIDlet is recommended. \n"
-                  + "Do you want to restart the MIDlet? All MIDlet data will be lost.",
+              "Changing device may trigger MIDlet to the unpredictable state and restart of MIDlet is recommended. \nDo you want to restart the MIDlet? All MIDlet data will be lost.",
               "Question?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         }
         if (!setDevice(selectDevicePanel.getSelectedDeviceEntry())) { return; }
@@ -381,8 +369,7 @@ public class Main extends JFrame {
         }
         final int scale = Integer.parseInt(e.getActionCommand());
         if (scaledDisplayFrame != null) {
-          ((SwingDisplayComponent)emulatorContext.getDisplayComponent())
-              .removeDisplayRepaintListener(updateScaledImageListener);
+          ((SwingDisplayComponent)emulatorContext.getDisplayComponent()).removeDisplayRepaintListener(updateScaledImageListener);
           scaledDisplayFrame.dispose();
         }
         scaledDisplayFrame = new JFrame(getTitle());
@@ -427,8 +414,7 @@ public class Main extends JFrame {
         });
         scaledDisplayFrame.getContentPane().addMouseMotionListener(new MouseMotionListener() {
 
-          private MouseMotionListener receiver = ((SwingDisplayComponent)emulatorContext
-              .getDisplayComponent()).getMouseMotionListener();
+          private MouseMotionListener receiver = ((SwingDisplayComponent)emulatorContext.getDisplayComponent()).getMouseMotionListener();
 
           public void mouseDragged(MouseEvent e) {
             receiver.mouseDragged(createAdaptedMouseEvent(e, scale));
@@ -440,8 +426,7 @@ public class Main extends JFrame {
         });
         scaledDisplayFrame.getContentPane().addMouseWheelListener(new MouseWheelListener() {
 
-          private MouseWheelListener receiver = ((SwingDisplayComponent)emulatorContext
-              .getDisplayComponent()).getMouseWheelListener();
+          private MouseWheelListener receiver = ((SwingDisplayComponent)emulatorContext.getDisplayComponent()).getMouseWheelListener();
 
           public void mouseWheelMoved(MouseWheelEvent e) {
             MouseWheelEvent adaptedEvent = createAdaptedMouseWheelEvent(e, scale);
@@ -451,14 +436,12 @@ public class Main extends JFrame {
         scaledDisplayFrame.addKeyListener(devicePanel);
 
         updateScaledImage(scale, scaledDisplayFrame);
-        ((SwingDisplayComponent)emulatorContext.getDisplayComponent())
-            .addDisplayRepaintListener(updateScaledImageListener);
+        ((SwingDisplayComponent)emulatorContext.getDisplayComponent()).addDisplayRepaintListener(updateScaledImageListener);
         scaledDisplayFrame.setIconImage(getIconImage());
         scaledDisplayFrame.setResizable(false);
         Point location = getLocation();
         Dimension size = getSize();
-        Rectangle window = Config.getWindow("scaledDisplay",
-            new Rectangle(location.x + size.width, location.y, 0, 0));
+        Rectangle window = Config.getWindow("scaledDisplay", new Rectangle(location.x + size.width, location.y, 0, 0));
         scaledDisplayFrame.setLocation(window.x, window.y);
         Config.setWindow("scaledDisplay",
             new Rectangle(scaledDisplayFrame.getX(), scaledDisplayFrame.getY(), 0, 0), false);
