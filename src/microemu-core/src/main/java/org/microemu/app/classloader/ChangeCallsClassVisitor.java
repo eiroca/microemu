@@ -49,10 +49,12 @@ public class ChangeCallsClassVisitor extends ClassVisitor {
     ChangeCallsClassVisitor.javaVersion.put(new Integer(48), "1.4");
     ChangeCallsClassVisitor.javaVersion.put(new Integer(49), "1.5");
     ChangeCallsClassVisitor.javaVersion.put(new Integer(50), "1.6");
+    ChangeCallsClassVisitor.javaVersion.put(new Integer(51), "1.7");
+    ChangeCallsClassVisitor.javaVersion.put(new Integer(52), "1.8");
   }
 
   public ChangeCallsClassVisitor(final ClassVisitor cv, final InstrumentationConfig config) {
-    super(Opcodes.ASM4);
+    super(Opcodes.ASM5);
     this.cv = cv;
     this.config = config;
   }

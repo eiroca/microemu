@@ -25,7 +25,6 @@ package org.microemu.app.classloader;
 public class InstrumentationConfig {
 
   private boolean enhanceThreadCreation = false;
-
   private boolean enhanceCatchBlock = false;
 
   public boolean isEnhanceCatchBlock() {

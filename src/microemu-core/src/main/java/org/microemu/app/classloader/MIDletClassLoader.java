@@ -56,6 +56,7 @@ public class MIDletClassLoader extends URLClassLoader {
   public static boolean traceSystemClassLoading = false;
 
   public static boolean enhanceCatchBlock = false;
+  public static boolean enhanceThread = false;
 
   private final static boolean debug = false;
 
@@ -86,7 +87,7 @@ public class MIDletClassLoader extends URLClassLoader {
     acc = AccessController.getContext();
     config = new InstrumentationConfig();
     config.setEnhanceCatchBlock(MIDletClassLoader.enhanceCatchBlock);
-    config.setEnhanceThreadCreation(true);
+    config.setEnhanceThreadCreation(MIDletClassLoader.enhanceThread);
   }
 
   // public MIDletClassLoader(URL[] urls, ClassLoader parent) {

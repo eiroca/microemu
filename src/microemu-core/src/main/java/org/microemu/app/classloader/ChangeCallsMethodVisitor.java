@@ -65,7 +65,7 @@ public class ChangeCallsMethodVisitor extends MethodVisitor implements Opcodes {
   }
 
   public ChangeCallsMethodVisitor(final MethodVisitor mv, final InstrumentationConfig config) {
-    super(Opcodes.ASM4);
+    super(Opcodes.ASM5);
     this.mv = mv;
     this.config = config;
   }
