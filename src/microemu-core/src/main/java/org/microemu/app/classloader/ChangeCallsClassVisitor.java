@@ -51,6 +51,7 @@ public class ChangeCallsClassVisitor extends ClassVisitor {
     ChangeCallsClassVisitor.javaVersion.put(new Integer(50), "1.6");
     ChangeCallsClassVisitor.javaVersion.put(new Integer(51), "1.7");
     ChangeCallsClassVisitor.javaVersion.put(new Integer(52), "1.8");
+    ChangeCallsClassVisitor.javaVersion.put(new Integer(53), "1.9");
   }
 
   public ChangeCallsClassVisitor(final ClassVisitor cv, final InstrumentationConfig config) {
@@ -63,7 +64,7 @@ public class ChangeCallsClassVisitor extends ClassVisitor {
   public void visit(final int version, final int access, final String name, final String signature, String superName, final String[] interfaces) {
     if ((0xFF & version) >= 49) {
       final String v = (String)ChangeCallsClassVisitor.javaVersion.get(new Integer(version));
-      Logger.warn("Loading MIDlet class " + name + " of version " + version + ((v == null) ? "" : (" " + v)));
+      Logger.info("Loading MIDlet class " + name + " of version " + version + ((v == null) ? "" : (" " + v)));
     }
     if (config.isEnhanceThreadCreation()) {
       if (superName.equals("java/lang/Thread")) {
