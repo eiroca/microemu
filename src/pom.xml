@@ -12,6 +12,8 @@
 	</organization>
 	<properties>
 		<jdk.version>1.8</jdk.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <surefire.version>2.22.2</surefire.version>
     <junit.version>4.13.2</junit.version>
 		<asm.version>9.3</asm.version>
